@@ -1,4 +1,4 @@
-function generateTable() {
+function generateTestMiniTable() {
   var data = score_table; // The variable from model_scores.js
 
   var table = '<table class="js-sort-table" id="results">';
@@ -8,100 +8,95 @@ function generateTable() {
           <td class="js-sort"><strong>Method</strong></td>
           <td class="js-sort"><strong>Source</strong></td>
           <td class="js-sort"><strong>Date</strong></td>
-          <td class="js-sort-number"><strong><u>ALL</u></strong></td>
-          <td class="js-sort-number"><strong>FQA</strong></td>
-          <td class="js-sort-number"><strong>GPS</strong></td>
-          <td class="js-sort-number"><strong>MWP</strong></td>
-          <td class="js-sort-number"><strong>TQA</strong></td>
-          <td class="js-sort-number"><strong>VQA</strong></td>
-          <td class="js-sort-number"><strong>ALG</strong></td>
-          <td class="js-sort-number"><strong>ARI</strong></td>
-          <td class="js-sort-number"><strong>GEO</strong></td>
-          <td class="js-sort-number"><strong>LOG</strong></td>
-          <td class="js-sort-number"><strong>NUM</strong></td>
-          <td class="js-sort-number"><strong>SCI</strong></td>
-          <td class="js-sort-number"><strong>STA</strong></td>
+          <td class="js-sort-number"><strong>PS</strong></td>
+          <td class="js-sort-number"><strong>FC</strong></td>
+          <td class="js-sort-number"><strong>PR</strong></td>
+          <td class="js-sort-number"><strong>SC</strong></td>
+          <td class="js-sort-number"><strong>RR</strong></td>
+          <td class="js-sort-number"><strong>MR</strong></td>
+          <td class="js-sort-number"><strong>NR</strong></td>
+          <td class="js-sort-number"><strong>SR</strong></td>
+          <td class="js-sort-number"><strong>OD</strong></td>
+          <td class="js-sort-number"><strong>LR</strong></td>
+          <td class="js-sort-number js-sort-onload"><strong><u>All</u></strong></td>
       </tr>`;
 
-      // sort data to make sure the best model is on top
-      first_row = '-' // "Human Performance*"
-      console.log(data);
+  var humanPerformance = data['-'];
+  table += '<tr>';
+  table += `<td>-</td>`;
+  table += `<td><b>${humanPerformance.Model}</b></td>`;
+  table += `<td>${humanPerformance.Method}</td>`;
+  table += `<td><a href="${humanPerformance.Source}" class="ext-link" style="font-size: 16px;">Link</a></td>`;
+  table += `<td>${humanPerformance.Date}</td>`;
+  table += `<td>${!isNaN(humanPerformance.PS) ? humanPerformance.PS.toFixed(1) : humanPerformance.PS}</td>`;
+  table += `<td>${!isNaN(humanPerformance.FC) ? humanPerformance.FC.toFixed(1) : humanPerformance.FC}</td>`;
+  table += `<td>${!isNaN(humanPerformance.PR) ? humanPerformance.PR.toFixed(1) : humanPerformance.PR}</td>`;
+  table += `<td>${!isNaN(humanPerformance.SC) ? humanPerformance.SC.toFixed(1) : humanPerformance.SC}</td>`;
+  table += `<td>${!isNaN(humanPerformance.RR) ? humanPerformance.RR.toFixed(1) : humanPerformance.RR}</td>`;
+  table += `<td>${!isNaN(humanPerformance.MR) ? humanPerformance.MR.toFixed(1) : humanPerformance.MR}</td>`;
+  table += `<td>${!isNaN(humanPerformance.NR) ? humanPerformance.NR.toFixed(1) : humanPerformance.NR}</td>`;
+  table += `<td>${!isNaN(humanPerformance.SR) ? humanPerformance.SR.toFixed(1) : humanPerformance.SR}</td>`;
+  table += `<td>${!isNaN(humanPerformance.OD) ? humanPerformance.OD.toFixed(1) : humanPerformance.OD}</td>`;
+  table += `<td>${!isNaN(humanPerformance.LR) ? humanPerformance.LR.toFixed(1) : humanPerformance.LR}</td>`;
+  table += `<td><b>${!isNaN(humanPerformance.All) ? humanPerformance.All.toFixed(1) : humanPerformance.All}</b></td>`;
+  table += '</tr>';
 
-      // get all keys in data
-      var keys = Object.keys(data);
+  var modelsToRank = Object.entries(data)
+    .filter(([key]) => key !== '-')
+    .map(([, value]) => value);
 
-      // remove "Human Performance*" from keys
-      var index = keys.indexOf(first_row);
-      if (index > -1) {
-        keys.splice(index, 1);
-      }
+  // Sort models by the 'All' score in descending order
+  modelsToRank.sort((a, b) => b.All - a.All);
 
-      // add "Human Performance*" to the top of keys
-      keys.unshift(first_row);
+  var topN = 3;
+  for (let i = 0; i < Math.min(modelsToRank.length, topN); i++) {
+    const entry = modelsToRank[i];
+    table += '<tr>';
+    table += `<td>${i + 1}</td>`;
+    table += `<td><b class="best-score-text">${entry.Model}</b></td>`;
+    table += `<td class="best-score-bg">${entry.Method}</td>`;
+    table += `<td class="best-score-bg"><a href="${entry.Source}" class="ext-link" style="font-size: 16px;">Link</a></td>`;
+    table += `<td class="best-score-bg">${entry.Date}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.PS) ? entry.PS.toFixed(1) : entry.PS}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.FC) ? entry.FC.toFixed(1) : entry.FC}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.PR) ? entry.PR.toFixed(1) : entry.PR}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.SC) ? entry.SC.toFixed(1) : entry.SC}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.RR) ? entry.RR.toFixed(1) : entry.RR}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.MR) ? entry.MR.toFixed(1) : entry.MR}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.NR) ? entry.NR.toFixed(1) : entry.NR}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.SR) ? entry.SR.toFixed(1) : entry.SR}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.OD) ? entry.OD.toFixed(1) : entry.OD}</td>`;
+    table += `<td class="best-score-bg">${!isNaN(entry.LR) ? entry.LR.toFixed(1) : entry.LR}</td>`;
+    table += `<td class="best-score-bg"><b>${!isNaN(entry.All) ? entry.All.toFixed(1) : entry.All}</b></td>`;
+    table += '</tr>';
+  }
 
-      console.log(keys);
-
-      // for (var key in data) {
-      for (var i=0; i<keys.length; i++) {
-        var key = keys[i];
-        console.log(key);
-        var entry = data[key];
-
-        table += '<tr>';
-        table += `<td>${key}</td>`
-
-        // for key = "1", "2", "3"
-        top_ranks = ["1", "2", "3"]
-        if (top_ranks.includes(key)) {
-          table += `<td><b class="best-score-text">${entry.Model}</b></td>`;
-          table += `<td>${entry.Method}</td>`;
-          table += `<td><a href="${entry.Source}" class="ext-link" style="font-size: 16px;">Link</a></td>`;
-          table += `<td>${entry.Date}</td>`;
-          table += `<td><b class="best-score-text">${entry.ALL.toFixed(1).toString()}</b></td>`; // .toFixed(1): round to 1 decimal place
-        }
-        else {
-          table += `<td><b>${entry.Model}</b></td>`;
-          table += `<td>${entry.Method}</td>`;
-          table += `<td><a href="${entry.Source}" class="ext-link" style="font-size: 16px;">Link</a></td>`;
-          table += `<td>${entry.Date}</td>`;
-          table += `<td><b>${entry.ALL.toFixed(1).toString()}</b></td>`; // .toFixed(1): round to 1 decimal place
-        }          
-
-        // if entry.FQA is a number
-        if (!isNaN(entry.FQA)) {
-          table += `<td>${entry.FQA.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.GPS.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.MWP.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.TQA.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.VQA.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.ALG.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.ARI.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.GEO.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.LOG.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.NUM.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.SCI.toFixed(1).toString()}</td>`;
-          table += `<td>${entry.STA.toFixed(1).toString()}</td>`;
-        }
-        else {
-        table += `<td>${entry.FQA.toString()}</td>`;
-        table += `<td>${entry.GPS.toString()}</td>`;
-        table += `<td>${entry.MWP.toString()}</td>`;
-        table += `<td>${entry.TQA.toString()}</td>`;
-        table += `<td>${entry.VQA.toString()}</td>`;
-        table += `<td>${entry.ALG.toString()}</td>`;
-        table += `<td>${entry.ARI.toString()}</td>`;
-        table += `<td>${entry.GEO.toString()}</td>`;
-        table += `<td>${entry.LOG.toString()}</td>`;
-        table += `<td>${entry.NUM.toString()}</td>`;
-        table += `<td>${entry.SCI.toString()}</td>`;
-        table += `<td>${entry.STA.toString()}</td>`;
-        }
-        table += '</tr>';
-    }
+  // Add the rest of the models
+  for (let i = topN; i < modelsToRank.length; i++) {
+    const entry = modelsToRank[i];
+    table += '<tr>';
+    table += `<td>${i + 1}</td>`;
+    table += `<td><b>${entry.Model}</b></td>`;
+    table += `<td>${entry.Method}</td>`;
+    table += `<td><a href="${entry.Source}" class="ext-link" style="font-size: 16px;">Link</a></td>`;
+    table += `<td>${entry.Date}</td>`;
+    table += `<td>${!isNaN(entry.PS) ? entry.PS.toFixed(1) : entry.PS}</td>`;
+    table += `<td>${!isNaN(entry.FC) ? entry.FC.toFixed(1) : entry.FC}</td>`;
+    table += `<td>${!isNaN(entry.PR) ? entry.PR.toFixed(1) : entry.PR}</td>`;
+    table += `<td>${!isNaN(entry.SC) ? entry.SC.toFixed(1) : entry.SC}</td>`;
+    table += `<td>${!isNaN(entry.RR) ? entry.RR.toFixed(1) : entry.RR}</td>`;
+    table += `<td>${!isNaN(entry.MR) ? entry.MR.toFixed(1) : entry.MR}</td>`;
+    table += `<td>${!isNaN(entry.NR) ? entry.NR.toFixed(1) : entry.NR}</td>`;
+    table += `<td>${!isNaN(entry.SR) ? entry.SR.toFixed(1) : entry.SR}</td>`;
+    table += `<td>${!isNaN(entry.OD) ? entry.OD.toFixed(1) : entry.OD}</td>`;
+    table += `<td>${!isNaN(entry.LR) ? entry.LR.toFixed(1) : entry.LR}</td>`;
+    table += `<td><b>${!isNaN(entry.All) ? entry.All.toFixed(1) : entry.All}</b></td>`;
+    table += '</tr>';
+  }
 
   table += '</table>';
-  document.getElementById('testmini_leaderboard').innerHTML = table; // Assuming you have a div with id 'container' where the table will be placed
+  document.getElementById('testmini_leaderboard').innerHTML = table;
 }
 
 // Call the function when the window loads
-window.onload = generateTable;
+document.addEventListener("DOMContentLoaded", generateTestMiniTable);
